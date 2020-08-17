@@ -9,27 +9,21 @@
 import SwiftUI
 
 struct ContentView: View {
-	@ObservedObject var viewModel: GameController
+	@ObservedObject var viewModel: EmojiMemoryGame
 	
     var body: some View {
-		ZStack {
-			if !viewModel.inGame {
-				NavigationView {
-					List(themeData) { theme in
-						NavigationLink(destination: GameView(viewModel: self.viewModel, theme: theme)) {
-							Text(theme.name)
-						}
-					}
-				.navigationBarTitle("Game Themes")
-				}
+		VStack {
+			Button(action: { self.viewModel.newGame() }) {
+				Text("New Game")
 			}
+			GameView(viewModel: viewModel)
 		}
-    }
+	}
 }
+
 
 struct GameView: View {
 	@ObservedObject var viewModel: EmojiMemoryGame
-	var theme: CardTheme
 	
 	var body: some View {
 		VStack {
@@ -40,7 +34,8 @@ struct GameView: View {
 				.padding(5)
 			}
 			.padding()
-			.foregroundColor(Color.orange)
+			.foregroundColor(self.viewModel.color)
+			.navigationBarHidden(true)
 			ScoreView(score: viewModel.score)
 		}
 	}
@@ -55,7 +50,7 @@ struct CardView: View {
 		}
 	}
 	
-	func body(_ size: CGSize) -> some View {
+	private func body(_ size: CGSize) -> some View {
 		ZStack {
 			if card.isFaceUp {
 				RoundedRectangle(cornerRadius: cornerRadius)
@@ -75,9 +70,9 @@ struct CardView: View {
 	
 	//MARK: - Drawing Constants
 	
-	let cornerRadius: CGFloat = 10.0
-	let edgeLineWidth: CGFloat = 3.0
-	func fontSize(_ size: CGSize) -> CGFloat {
+	private let cornerRadius: CGFloat = 10.0
+	private let edgeLineWidth: CGFloat = 3.0
+	private func fontSize(_ size: CGSize) -> CGFloat {
 		min(size.width, size.height) * 0.75
 	}
 }
@@ -96,6 +91,6 @@ struct ScoreView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-		ContentView(viewModel: game)
+		ContentView(viewModel: EmojiMemoryGame())
     }
 }

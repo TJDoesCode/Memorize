@@ -9,18 +9,19 @@
 import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
-	@Published public var inGame: Bool = false
-	@Published private var game: MemoryGame<String>
-		
-	static func createMemoryGame(theme: CardTheme) -> MemoryGame<String> {
+	@Published private var game: MemoryGame<String> = EmojiMemoryGame.createMemoryGame()
+	private static var theme: CardTheme = themeData.randomElement()!
+	
+	private static func createMemoryGame() -> MemoryGame<String> {
 		let emoji: Array<String> = theme.cards
 		return MemoryGame<String>(numPairs: emoji.count) { i in
 			return emoji[i]
 		}
 	}
 	
-	init(theme: CardTheme) {
-		game = EmojiMemoryGame.createMemoryGame(theme: theme)
+	func newGame() {
+		EmojiMemoryGame.theme = themeData.randomElement()!
+		game = EmojiMemoryGame.createMemoryGame()
 	}
 	
 	//MARK: - Access to the Model
@@ -30,6 +31,15 @@ class EmojiMemoryGame: ObservableObject {
 	
 	var score: Int {
 		game.score
+	}
+	
+	var color: Color {
+		let theme = EmojiMemoryGame.theme
+		//Convert RGB values to ratio values
+		let colors = theme.color.map({value in
+			return value/255
+		})
+		return(Color(.sRGB, red: colors[0], green: colors[1], blue: colors[2], opacity: 1))
 	}
 	
 	//MARK: - Intent(s)

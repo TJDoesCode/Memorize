@@ -2,6 +2,8 @@
 //  Data.swift
 //  Memorize
 //
+//  Imports and decodes themeData.json, makes accessable
+//
 //  Created by Trevor Reigh on 8/15/20.
 //  Copyright © 2020 Trevor Reigh. All rights reserved.
 //
@@ -10,7 +12,7 @@ import Foundation
 
 let themeData: Array<CardTheme> = load("themeData.json")
 
-func load<T: Decodable>(_ filename: String) -> T {
+private func load<T: Decodable>(_ filename: String) -> T {
     let data: Data
     
     guard let file = Bundle.main.url(forResource: filename, withExtension: nil)

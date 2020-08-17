@@ -9,10 +9,11 @@
 import Foundation
 
 struct MemoryGame<CardContent> where CardContent: Equatable {
-	var cards: Array<Card>
-	var score = 0
+	private(set) var cards: Array<Card>
+	private(set) var score = 0
+	private var matched = 0
 	
-	var faceUpIndex: Int? {
+	private var faceUpIndex: Int? {
 		get { cards.indices.filter { cards[$0].isFaceUp }.only }
 		set {
 			for index in cards.indices {
@@ -28,7 +29,10 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
 			arr.append(Card(id: i*2, content: content))
 			arr.append(Card(id: i*2+1, content: content))
 		}
+		//This does not actually randomize cards
+		//TODO: Cards are drawn based on ID; randomize by ID
 		cards = arr.shuffled()
+		print(cards)
 	}
 	
 	mutating func choose(card: Card) {
@@ -38,6 +42,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
 					cards[chosenIndex].isMatched = true
 					cards[potentialMatchIndex].isMatched = true
 					score += 2
+					matched += 2
 				} else {
 					score -= 1
 				}
